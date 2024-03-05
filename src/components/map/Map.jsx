@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./map.css";
 import GoogleMapReact from "google-map-react";
 import { Icon } from "@iconify/react";
 import locationIcon from "@iconify/icons-mdi/map-marker";
+import SearchBox from "./SearchBox";
 
 const LocationPin = ({ text }) => (
   <div className="pin">
@@ -12,19 +13,57 @@ const LocationPin = ({ text }) => (
 );
 
 const Map = ({ location, zoomLevel }) => {
+  const [mapApiLoaded, setMapApiLoaded] = useState(false);
+  const [mapInstance, setMapInstance] = useState(null);
+  const [mapApi, setMapApi] = useState(null);
+  const [places, setPlaces] = useState([]);
+
+  const apiHasLoaded = (map, maps) => {
+    setMapApiLoaded(true);
+    setMapInstance(map);
+    setMapApi(maps);
+  };
+
+  const addPlace = (place) => {
+    setPlaces((prevPlaces) => [...prevPlaces, ...place]);
+  };
+
+  // UseEffect to handle the side effect of updating places
+  useEffect(() => {
+    // Check if places array is not empty before updating
+    if (places.length > 0 && mapApiLoaded) {
+      setMapInstance((prevMap) => {
+        const newLocation = {
+          lat: places[0]?.geometry?.location?.lat(),
+          lng: places[0]?.geometry?.location?.lng(),
+        };
+
+        // Pan to the new location
+        prevMap.panTo(newLocation);
+        return prevMap;
+      });
+    }
+  }, [places, mapApiLoaded]);
+
   return (
     <div className="map">
-      <h2 className="map-h2">Come Visit Us At Our Campus</h2>
-
+      {mapApiLoaded && (
+        <SearchBox map={mapInstance} mapApi={mapApi} addPlace={addPlace} />
+      )}
       <div className="google-map">
         <GoogleMapReact
-          bootstrapURLKeys={{ key: "" }}
+          bootstrapURLKeys={{
+            key: "AIzaSyC5IXh7pZle95YP5eKu03nX83yaUIiOP5E",
+            libraries: ["places", "geometry"],
+          }}
           defaultCenter={location}
-          defaultZoom={zoomLevel}>
+          defaultZoom={zoomLevel}
+          yesIWantToUseGoogleMapApiInternals
+          onGoogleApiLoaded={({ map, maps }) => apiHasLoaded(map, maps)}>
           <LocationPin
-            lat={location.lat}
-            lng={location.lng}
-            text={location.address}
+            text={places[0]?.name}
+            lat={places[0]?.geometry?.location?.lat()}
+            lng={places[0]?.geometry?.location?.lng()}
           />
         </GoogleMapReact>
       </div>
