@@ -1,8 +1,14 @@
 import React from "react";
-import "./map.css";
 import GoogleMapReact from "google-map-react";
+import "./map.css";
 import { Icon } from "@iconify/react";
 import locationIcon from "@iconify/icons-mdi/map-marker";
+
+const location = {
+  address: "1600 Amphitheatre Parkway, Mountain View, california.",
+  lat: 37.42216,
+  lng: -122.08427,
+};
 
 const LocationPin = ({ text }) => (
   <div className="pin">
@@ -11,16 +17,16 @@ const LocationPin = ({ text }) => (
   </div>
 );
 
-const Map = ({ location, zoomLevel }) => {
+const Map = () => {
   return (
     <div className="map">
       <h2 className="map-h2">Come Visit Us At Our Campus</h2>
 
       <div className="google-map">
         <GoogleMapReact
-          bootstrapURLKeys={{ key: "" }}
+          bootstrapURLKeys={{ key: "AIzaSyC5IXh7pZle95YP5eKu03nX83yaUIiOP5E" }}
           defaultCenter={location}
-          defaultZoom={zoomLevel}>
+          defaultZoom={17}>
           <LocationPin
             lat={location.lat}
             lng={location.lng}
