@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from "react";
 import "./map.css";
 import GoogleMapReact from "google-map-react";
+import "./map.css";
 import { Icon } from "@iconify/react";
 import locationIcon from "@iconify/icons-mdi/map-marker";
 import SearchBox from "./SearchBox";
+
+const location = [
+  {
+    address: "Address 1",
+    lat: 59.955413,
+    lng: 30.337844,
+  },
+  {
+    address: "Address 2",
+    lat: 59.724465,
+    lng: 30.0801211,
+  },
+];
 
 const LocationPin = ({ text }) => (
   <div className="pin">
